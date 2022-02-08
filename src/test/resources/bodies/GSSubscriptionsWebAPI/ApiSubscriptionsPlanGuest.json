@@ -1,0 +1,8 @@
+{
+  "CurrencyCode": "USD",
+  "IsSchool": false,
+  "IsPrivate": false,
+  "OnlyAvailables": true,
+  "FilterByLanguage": true,
+  "CountryIsoAlpha3": null
+}
