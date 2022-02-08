@@ -12,7 +12,7 @@ class MainPage extends Simulation {
   val baseUrlSubscriptionsAPI = baseDomain + 8852;
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "41275ccf-a66b-43b2-f7c3-cae12224d1d7")
+                    "Token"  -> "abd072c4-071a-0e50-4023-bfe6b7ec9171")
 
   val scn = scenario("gs-users-web-api") // A scenario is a chain of requests and pauses
     .exec(http("/api/login/client")
