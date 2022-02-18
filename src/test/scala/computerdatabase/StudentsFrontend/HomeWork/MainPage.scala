@@ -5,12 +5,12 @@ import io.gatling.http.Predef._
 
 class MainPage extends Simulation {
 
-  val baseDomain = "https://genial-skills-dev-auto-scaling-api.citriom.io:";
-  val httpProtocol = http.baseUrl("https://genial-skills-dev-auto-scaling-api.citriom.io");
+  val baseDomain = "https://dev-api.genialskillsweb.com:";
+  val httpProtocol = http.baseUrl("https://https://dev-api.genialskillsweb.com");
   val baseUrlTeachersAPI = baseDomain + 8851;
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "5bb648ca-10df-1f55-7f6b-a2f5f74e5efb")
+                    "Token"  -> "38ae1e8d-d353-ed6b-edbf-91fe9b7c7715")
 
   val scn = scenario("PendingHomeWork") // A scenario is a chain of requests and pauses
     //left page pending assigned homework
@@ -24,5 +24,5 @@ class MainPage extends Simulation {
       .body(RawFileBody("./src/test/resources/bodies/GsSubscriptionsWebAPI/ApiSubscriptionsCompletedHomeWork.json")).asJson
       .headers(headers))
 
-      setUp(scn.inject(rampUsers(1000).during(60)).protocols(httpProtocol))
+      setUp(scn.inject(rampUsers(25000).during(120)).protocols(httpProtocol))
 }
