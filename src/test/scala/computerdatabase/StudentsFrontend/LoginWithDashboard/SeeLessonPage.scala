@@ -10,7 +10,7 @@ class SeeLessonPage extends Simulation {
   val baseUrlAthenasAPI = baseDomain + 8739;
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "38ae1e8d-d353-ed6b-edbf-91fe9b7c7715")
+                    "Token"  -> "cf9b0675-2cda-1341-5b54-2733dee3ade8")
 
   val scn = scenario("SeeLessonPage") // A scenario is a chain of requests and pauses
     //lesson

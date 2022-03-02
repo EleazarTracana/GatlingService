@@ -5,12 +5,13 @@ import io.gatling.http.Predef._
 
 class SeeAssignmentPage extends Simulation {
 
-  val baseDomain = "https://genial-skills-dev-auto-scaling-api.citriom.io:";
-  val httpProtocol = http.baseUrl("https://genial-skills-dev-auto-scaling-api.citriom.io");
+  System.getenv("JAVA_OPTS")
+  val baseDomain = "https://dev-api.genialskillsweb.com:";
+  val httpProtocol = http.baseUrl("https://dev-api.genialskillsweb.com");
   val baseUrlTeachersAPI = baseDomain + 8851;
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "5bb648ca-10df-1f55-7f6b-a2f5f74e5efb")
+                    "Token"  -> "ae4a6134-636c-d81b-f8b1-b5d305251060")
 
   val scn = scenario("See Assignment") // A scenario is a chain of requests and pauses
     //Create Authorization code
@@ -20,8 +21,8 @@ class SeeAssignmentPage extends Simulation {
     .pause(1)
     //HomeworkDetails details
     .exec(http("/api/homework/quiz/student-quiz/{authorizationCode}")
-      .get(baseUrlTeachersAPI + "/api/homework/quiz/student-quiz/sMduVmotZKgo2Jn8teMGwRuDceN1uJEkBeZPQvgfBcNZNUqjh0")
+      .get(baseUrlTeachersAPI + "/api/homework/quiz/student-quiz/rRsyiC7NSGzfAsI7vYN4yGelnDZX1F6IFjDVvsDAifMmpbZ2Jh")
       .headers(headers))
 
-      setUp(scn.inject(rampUsers(1000).during(60)).protocols(httpProtocol))
+      setUp(scn.inject(rampUsers(15000).during(60)).protocols(httpProtocol))
 }

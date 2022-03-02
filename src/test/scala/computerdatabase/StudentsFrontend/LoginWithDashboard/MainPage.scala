@@ -12,7 +12,7 @@ class MainPage extends Simulation {
   val baseUrlSubscriptionsAPI = baseDomain + 8852;
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "38ae1e8d-d353-ed6b-edbf-91fe9b7c7715")
+                    "Token"  -> "ae4a6134-636c-d81b-f8b1-b5d305251060")
 
   val scn = scenario("gs-users-web-api") // A scenario is a chain of requests and pauses
     .exec(http("/api/login/client")
@@ -25,9 +25,9 @@ class MainPage extends Simulation {
     .exec(http("/api/planning/student/lessons/1/5")
       .get(baseUrlTeachersAPI +"/api/planning/student/lessons/1/5")
       .headers(headers))
-    .exec(http("/api/subscriptions/student/courses")
+    /*.exec(http("/api/subscriptions/student/courses")
       .get(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
-       .headers(headers));
+       .headers(headers));*/
 
       setUp(scn.inject(rampUsers(20000).during(120)).protocols(httpProtocol))
 }
