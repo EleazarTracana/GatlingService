@@ -9,8 +9,8 @@ class LessonDetails extends Simulation {
   val baseDomain = "https://dev-api.genialskillsweb.com:";
   val httpProtocol = http.baseUrl("https://dev-api.genialskillsweb.com");
   val baseUrlGsWebAPI = baseDomain + 8981;
-  val injectUsersCount = 10000;
-  val injectUsersSeconds = 60;
+  val injectUsersCount = Integer.getInteger("users", 1)
+  val injectUsersSeconds = java.lang.Long.getLong("ramp", 0)
   val Token = new Authentication().getToken();
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",

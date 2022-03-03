@@ -1,28 +1,34 @@
 package computerdatabase.StudentsFrontend.Lessons
 
+import computerdatabase.Authentication
 import io.gatling.core.Predef._
+import io.gatling.core.body.Body
 import io.gatling.http.Predef._
 
 class MainPage extends Simulation {
 
-  val baseDomain = "https://genial-skills-dev-auto-scaling-api.citriom.io:";
-  val httpProtocol = http.baseUrl("https://genial-skills-dev-auto-scaling-api.citriom.io");
-  val baseUrlTeachersAPI = baseDomain + 8851;
+  val baseDomain = "https://dev-api.genialskillsweb.com:";
+  val httpProtocol = http.baseUrl("https://dev-api.genialskillsweb.com");
+  val baseUrlSubscriptionsAPI = baseDomain + 8852;
+  val baseUrlAthenasAPI = baseDomain + 8739;
+  val Token = new Authentication().getToken();
+  val byLessonsModel = "{\"Token\": "+Token+", \"LangCode\": \"en\",\"LessonModelList\": [ {\"LevelCode\": \"K\", \"SubjectCode\": \"SCI-SP\"}]}"
+  val injectUsersCount = Integer.getInteger("users", 1)
+  val injectUsersSeconds = java.lang.Long.getLong("ramp", 0)
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "abd072c4-071a-0e50-4023-bfe6b7ec9171")
+                    "Token"  -> Token)
 
-  val scn = scenario("PendingHomeWork") // A scenario is a chain of requests and pauses
-    //left page pending assigned homework
-    .exec(http("/api/homework/pending/student")
-      .post(baseUrlTeachersAPI + "/api/homework/pending/student")
-      .body(RawFileBody("./src/test/resources/bodies/GsSubscriptionsWebAPI/ApiSubscriptionsAssignedHomeWork.json")).asJson
-      .headers(headers))
-    //right page completed homework
-    .exec(http("/api/homework/completed/student")
-      .post(baseUrlTeachersAPI + "/api/homework/completed/student")
-      .body(RawFileBody("./src/test/resources/bodies/GsSubscriptionsWebAPI/ApiSubscriptionsCompletedHomeWork.json")).asJson
-      .headers(headers))
+  val scnAllCourses = scenario("AllCourses") // A scenario is a chain of requests and pauses
+    .exec(http("/api/subscriptions/student/courses")
+      .get(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
+      .headers(headers));
+  val scnLessonsBySubject = scenario("LessonsBySubject") // A scenario is a chain of requests and pauses
+    .exec(http("/api/lessons/by-lesson-models/true")
+      .post(baseUrlAthenasAPI + "/api/lessons/by-lesson-models/true")
+      .body(StringBody(byLessonsModel))
+      .headers(headers));
 
-      setUp(scn.inject(rampUsers(13000).during(60)).protocols(httpProtocol))
+      setUp(scnAllCourses.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol),
+            scnLessonsBySubject.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }

@@ -29,4 +29,20 @@ class Authentication {
     val token  = element.getAsString();
     token
   }
+  def getAuthCode(Token: String): String ={
+    val post = new HttpPost("https://dev-api.genialskillsweb.com:8851/api/homework/authorization-code/create/9")
+    post.setHeader("Content-type", "application/json")
+    post.setHeader("Token", Token)
+    val response = (new DefaultHttpClient).execute(post)
+    val entity = response.getEntity()
+    var content = ""
+    if (entity != null) {
+      val inputStream = entity.getContent
+      content = scala.io.Source.fromInputStream(inputStream).mkString
+    }
+    val json = JsonParser.parseString(content).getAsJsonObject()
+    val element = json.get("AuthorizationCode")
+    val token  = element.getAsString();
+    token
+  }
 }

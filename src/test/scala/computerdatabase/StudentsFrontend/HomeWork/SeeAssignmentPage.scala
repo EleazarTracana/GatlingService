@@ -1,17 +1,22 @@
 package computerdatabase.StudentsFrontend.HomeWork
 
+import computerdatabase.Authentication
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
 class SeeAssignmentPage extends Simulation {
 
-  System.getenv("JAVA_OPTS")
   val baseDomain = "https://dev-api.genialskillsweb.com:";
   val httpProtocol = http.baseUrl("https://dev-api.genialskillsweb.com");
   val baseUrlTeachersAPI = baseDomain + 8851;
+  val Token = new Authentication().getToken();
+  val injectUsersCount = Integer.getInteger("users", 1)
+  val injectUsersSeconds = java.lang.Long.getLong("ramp", 0)
+  val authorizationCode = new Authentication().getAuthCode(Token);
+  print(authorizationCode)
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "ae4a6134-636c-d81b-f8b1-b5d305251060")
+                    "Token"  -> Token)
 
   val scn = scenario("See Assignment") // A scenario is a chain of requests and pauses
     //Create Authorization code
@@ -21,8 +26,8 @@ class SeeAssignmentPage extends Simulation {
     .pause(1)
     //HomeworkDetails details
     .exec(http("/api/homework/quiz/student-quiz/{authorizationCode}")
-      .get(baseUrlTeachersAPI + "/api/homework/quiz/student-quiz/rRsyiC7NSGzfAsI7vYN4yGelnDZX1F6IFjDVvsDAifMmpbZ2Jh")
+      .get(baseUrlTeachersAPI + "/api/homework/quiz/student-quiz/"+authorizationCode)
       .headers(headers))
 
-      setUp(scn.inject(rampUsers(15000).during(60)).protocols(httpProtocol))
+      setUp(scn.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }

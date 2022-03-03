@@ -9,6 +9,8 @@ class MainPage extends Simulation {
   val baseDomain = "https://dev-api.genialskillsweb.com:";
   val httpProtocol = http.baseUrl("https://dev-api.genialskillsweb.com/");
   val baseUrlTeachersAPI = baseDomain + 8851;
+  val injectUsersCount = Integer.getInteger("users", 1)
+  val injectUsersSeconds = java.lang.Long.getLong("ramp", 0)
   val Token = new Authentication().getToken();
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
@@ -26,6 +28,6 @@ class MainPage extends Simulation {
       .body(RawFileBody("./src/test/resources/bodies/GsSubscriptionsWebAPI/ApiSubscriptionsCompletedHomeWork.json")).asJson
       .headers(headers))
 
-      setUp(scnPendingHomework.inject(rampUsers(10000).during(60)).protocols(httpProtocol),
-            scnCompletedHomework.inject(rampUsers(10000).during(60)).protocols(httpProtocol))
+      setUp(scnPendingHomework.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol),
+            scnCompletedHomework.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }

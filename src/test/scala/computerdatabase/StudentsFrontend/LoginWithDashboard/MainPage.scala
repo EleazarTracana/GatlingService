@@ -1,5 +1,6 @@
 package computerdatabase.StudentsFrontend.LoginWithDashboard
 
+import computerdatabase.Authentication
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
@@ -10,9 +11,12 @@ class MainPage extends Simulation {
   val baseUrlUsersAPI = baseDomain + 8853;
   val baseUrlTeachersAPI = baseDomain + 8851;
   val baseUrlSubscriptionsAPI = baseDomain + 8852;
+  val injectUsersCount = Integer.getInteger("users", 1)
+  val injectUsersSeconds = java.lang.Long.getLong("ramp", 0)
+  val Token = new Authentication().getToken();
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "ae4a6134-636c-d81b-f8b1-b5d305251060")
+                    "Token"  -> Token)
 
   val scn = scenario("gs-users-web-api") // A scenario is a chain of requests and pauses
     .exec(http("/api/login/client")
@@ -25,9 +29,9 @@ class MainPage extends Simulation {
     .exec(http("/api/planning/student/lessons/1/5")
       .get(baseUrlTeachersAPI +"/api/planning/student/lessons/1/5")
       .headers(headers))
-    /*.exec(http("/api/subscriptions/student/courses")
+    .exec(http("/api/subscriptions/student/courses")
       .get(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
-       .headers(headers));*/
+       .headers(headers));
 
-      setUp(scn.inject(rampUsers(20000).during(120)).protocols(httpProtocol))
+      setUp(scn.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }
