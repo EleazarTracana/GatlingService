@@ -16,22 +16,35 @@ class MainPage extends Simulation {
   val Token = new Authentication().getToken();
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> Token)
+                    "Token"  -> "3a7ce15a-29e5-26a9-7106-85ce6217a245")
 
-  val scn = scenario("gs-users-web-api") // A scenario is a chain of requests and pauses
-    .exec(http("/api/login/client")
+  //USE ALL LOCAL ADDRESSES.
+  http.useAllLocalAddresses;
+
+  val scn = {
+    //POST
+    scenario("/api/login/client") // A scenario is a chain of requests and pauses
+      .exec(http("/api/login/client")
       .post(baseUrlUsersAPI + "/api/login/client")
       .body(RawFileBody("./src/test/resources/bodies/GsUsersWebAPI/ApiLoginClient.json")).asJson)
-    .exec(http("/api/homework/pending/student")
+    //POST
+    .exec(http("/api/homework/pending/student POST")
       .post(baseUrlTeachersAPI +"/api/homework/pending/student")
       .body(RawFileBody("./src/test/resources/bodies/GsTeachersAPI/ApiTeacherPendingHomework.json")).asJson
       .headers(headers))
-    .exec(http("/api/planning/student/lessons/1/5")
-      .get(baseUrlTeachersAPI +"/api/planning/student/lessons/1/5")
+    //OPTIONS
+    .exec(http("/api/homework/pending/student OPTIONS")
+      .options(baseUrlTeachersAPI +"/api/homework/pending/student")
       .headers(headers))
+    //GET
     .exec(http("/api/subscriptions/student/courses")
       .get(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
-       .headers(headers));
+      .headers(headers))
+  };
+
+  /* .exec(http("/api/activity/create")
+      .post(baseUrlUsersAPI +"/api/activity/create")
+      .headers(headers))*/
 
       setUp(scn.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }
