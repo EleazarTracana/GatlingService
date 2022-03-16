@@ -16,7 +16,7 @@ class MainPage extends Simulation {
   val Token = new Authentication().getToken();
   val headers = Map("Content-Type" -> "application/json",
                     "Accept" -> "application/json",
-                    "Token"  -> "3a7ce15a-29e5-26a9-7106-85ce6217a245")
+                    "Token"  -> Token)
 
   //USE ALL LOCAL ADDRESSES.
   http.useAllLocalAddresses;
@@ -24,7 +24,7 @@ class MainPage extends Simulation {
   val scn = {
     //POST
     scenario("/api/login/client") // A scenario is a chain of requests and pauses
-      .exec(http("/api/login/client")
+      .exec(http("/api/login/client POST")
       .post(baseUrlUsersAPI + "/api/login/client")
       .body(RawFileBody("./src/test/resources/bodies/GsUsersWebAPI/ApiLoginClient.json")).asJson)
     //POST
@@ -32,19 +32,31 @@ class MainPage extends Simulation {
       .post(baseUrlTeachersAPI +"/api/homework/pending/student")
       .body(RawFileBody("./src/test/resources/bodies/GsTeachersAPI/ApiTeacherPendingHomework.json")).asJson
       .headers(headers))
-    //OPTIONS
-    .exec(http("/api/homework/pending/student OPTIONS")
-      .options(baseUrlTeachersAPI +"/api/homework/pending/student")
-      .headers(headers))
     //GET
-    .exec(http("/api/subscriptions/student/courses")
+    .exec(http("/api/subscriptions/student/courses GET")
       .get(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
       .headers(headers))
+     //POST
+    .exec(http("/api/activity/create POST")
+    .post(baseUrlUsersAPI +"/api/activity/create")
+    .headers(headers))
+    //OPTIONS
+      .exec(http("/api/subscriptions/student/courses OPTIONS")
+        .options(baseUrlSubscriptionsAPI + "/api/subscriptions/student/courses")
+        .headers(headers))
+    //OPTIONS
+      .exec(http("/api/login/client OPTIONS")
+        .options(baseUrlUsersAPI + "/api/login/client")
+        .body(RawFileBody("./src/test/resources/bodies/GsUsersWebAPI/ApiLoginClient.json")).asJson)
+    //OPTIONS
+      .exec(http("/api/activity/create OPTIONS")
+        .options(baseUrlUsersAPI +"/api/activity/create")
+        .headers(headers))
+      //OPTIONS
+      .exec(http("/api/homework/pending/student OPTIONS")
+        .options(baseUrlTeachersAPI +"/api/homework/pending/student")
+        .headers(headers))
   };
-
-  /* .exec(http("/api/activity/create")
-      .post(baseUrlUsersAPI +"/api/activity/create")
-      .headers(headers))*/
 
       setUp(scn.inject(rampUsers(injectUsersCount).during(injectUsersSeconds)).protocols(httpProtocol))
 }
